@@ -20,8 +20,6 @@ namespace alten_test.BusinessLayer.Interfaces
 
         Task<PaginationResultDto<RoomDto>> List(IPaginationInfo pageInfo);
 
-        Task<PaginationResultDto<RoomDto>> GetAvailable(IPaginationInfo pageInfo, DateTime startDate, DateTime endDate);
-
         bool RoomExists(int id);
     }
 }

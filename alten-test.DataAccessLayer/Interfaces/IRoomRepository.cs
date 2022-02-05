@@ -10,6 +10,6 @@ namespace alten_test.DataAccessLayer.Interfaces
 {
     public interface IRoomRepository : IRepository<Room>
     {
-        Task<List<Room>> GetAvailableWithStoredProcedure(DateTime startDate, DateTime endDate, RoomType roomType);
+        Task<List<Room>> GetAvailableWithStoredProcedure(DateTime startDate, DateTime endDate);
     }
 }

@@ -18,9 +18,9 @@ namespace alten_test.DataAccessLayer.Repositories
     {
         public RoomRepository(DatabaseContext context) : base(context) { }
 
-        public async Task<List<Room>> GetAvailableWithStoredProcedure(DateTime startDate, DateTime endDate, RoomType roomType)
+        public async Task<List<Room>> GetAvailableWithStoredProcedure(DateTime startDate, DateTime endDate)
         {
-            return await _entities.FromSqlInterpolated($"CALL `GetAvailableRooms`({startDate},{endDate},{(int) roomType})").ToListAsync();
+            return await _entities.FromSqlInterpolated($"CALL `GetAvailableRooms`({startDate},{endDate})").ToListAsync();
         }
     }
 }

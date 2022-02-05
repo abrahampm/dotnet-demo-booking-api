@@ -175,5 +175,25 @@ namespace alten_test.PresentationLayer.Controllers
             return NoContent();
         }
         
+        
+
+        // GET: api/Reservation/Availability
+        [HttpGet("Availability")]
+        [Produces("application/json")]
+        public async Task<ActionResult<List<RoomDto>>> GetAvailability(
+            [FromQuery] DateTime startDate,
+            [FromQuery] DateTime endDate
+        )
+        {
+            var availableRooms = await _reservationService.GetAvailability(startDate, endDate);
+
+            if (availableRooms.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return availableRooms;
+        }
+        
     }
 }

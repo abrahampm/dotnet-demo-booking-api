@@ -70,22 +70,6 @@ namespace alten_test.BusinessLayer.Services
 
             return new PaginationResultDto<RoomDto>(pageInfoDto, pageDataDto);
         }
-
-
-        public async Task<PaginationResultDto<RoomDto>> GetAvailable(IPaginationInfo pageInfo, DateTime startDate, DateTime endDate)
-        {
-            RoomType roomType = RoomType.Single;
-            if (pageInfo.HasFiltering() && pageInfo.FilterPropertyName == nameof(Room.Type))
-            {
-                Enum.TryParse(pageInfo.FilterTerm, out roomType);    
-            }
-            var rooms = await _repository.GetAvailableWithStoredProcedure(startDate, endDate, roomType);
-            
-            var pageInfoDto = _mapper.Map<PaginationInfoDto>(pageInfo);
-            var pageDataDto = _mapper.Map<IEnumerable<RoomDto>>(rooms);
-
-            return new PaginationResultDto<RoomDto>(pageInfoDto, pageDataDto);
-        }
         
         public bool RoomExists(int id)
         {

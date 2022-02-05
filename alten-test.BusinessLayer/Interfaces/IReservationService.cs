@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using alten_test.Core.Dto;
@@ -17,6 +19,8 @@ namespace alten_test.BusinessLayer.Interfaces
         Task Delete(int id);
 
         Task<PaginationResultDto<ReservationDto>> List(IPaginationInfo pageInfo);
+        
+        Task<List<RoomDto>> GetAvailability(DateTime startDate, DateTime endDate);
 
         bool ReservationExists(int id);
     }
