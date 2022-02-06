@@ -8,8 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using alten_test.Core.Dto;
 using alten_test.Core.Models;
 using alten_test.BusinessLayer.Interfaces;
+using alten_test.Core.Models.Authentication;
 using alten_test.Core.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace alten_test.PresentationLayer.Controllers
 {
@@ -17,17 +19,17 @@ namespace alten_test.PresentationLayer.Controllers
     [ApiController]
     public class ReservationController : ControllerBase
     {
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IReservationService _reservationService;
-        private readonly IContactService _contactService;
         private readonly IRoomService _roomService;
 
-        public ReservationController(IReservationService reservationService, 
-                                     IContactService contactService,
+        public ReservationController(UserManager<ApplicationUser> userManager,
+                                     IReservationService reservationService,
                                      IRoomService roomService)
         {
             _reservationService = reservationService;
-            _contactService = contactService;
             _roomService = roomService;
+            _userManager = userManager;
         }
         
         // GET: api/Reservation
@@ -70,8 +72,10 @@ namespace alten_test.PresentationLayer.Controllers
             }
 
             var pageInfo = new PaginationInfo(pageNumber, pageSize, sortProperty, sortDirection);
-
-            return await _reservationService.List(pageInfo);
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+            
+            return await _reservationService.List(pageInfo, user, roles);
         }
         
         // GET: api/Reservation/5
@@ -81,7 +85,10 @@ namespace alten_test.PresentationLayer.Controllers
         [Authorize]
         public async Task<ActionResult<ReservationDto>> GetReservation(int id)
         {
-            var reservationDto = await _reservationService.FindById(id);
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+            
+            var reservationDto = await _reservationService.FindById(id, user, roles);
 
             if (reservationDto == null)
             {
@@ -107,21 +114,22 @@ namespace alten_test.PresentationLayer.Controllers
             {
                 return BadRequest();
             }
-
             var roomId = reservationDto.Room.Id;
-            var contactId = reservationDto.Contact.Id;
-            if (contactId <= 0 || roomId <= 0)
+            if (!_reservationService.ReservationExists(id) || !_roomService.RoomExists(roomId))
             {
-                return BadRequest();
+                return NotFound();
             }
 
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+            
             try
             {
-                await _reservationService.Update(reservationDto);
+                await _reservationService.Update(reservationDto, user, roles);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_reservationService.ReservationExists(id) || !_contactService.ContactExists(contactId) || !_roomService.RoomExists(roomId))
+                if (!_reservationService.ReservationExists(id) || !_roomService.RoomExists(roomId))
                 {
                     return NotFound();
                 }
@@ -146,21 +154,14 @@ namespace alten_test.PresentationLayer.Controllers
             {
                 return BadRequest();
             }
-            var contactId = reservationDtoInput.Contact.Id;
-            if (!_contactService.ContactExists(contactId))
+            if (!_roomService.RoomExists(reservationDtoInput.Room.Id))
             {
-                var newContactDto = await _contactService.Create(reservationDtoInput.Contact);
-                reservationDtoInput.Contact.Id = newContactDto.Id;
+                return BadRequest();
             }
-            
-            var roomId = reservationDtoInput.Room.Id;
-            if (!_roomService.RoomExists(roomId))
-            {
-                var newRoomDto = await _roomService.Create(reservationDtoInput.Room);
-                reservationDtoInput.Room.Id = newRoomDto.Id;
-            }
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
 
-            var reservationDto = await _reservationService.Create(reservationDtoInput);
+            var reservationDto = await _reservationService.Create(reservationDtoInput, user, roles);
             
             return CreatedAtAction(nameof(GetReservation), new { id = reservationDto.Id }, reservationDto);
         }
@@ -175,8 +176,11 @@ namespace alten_test.PresentationLayer.Controllers
             {
                 return NotFound();
             }
+            
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
 
-            await _reservationService.Delete(id);
+            await _reservationService.Delete(id, user, roles);
 
             return NoContent();
         }
