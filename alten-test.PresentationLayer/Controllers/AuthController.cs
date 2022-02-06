@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using alten_test.Core.Dto.Authentication;
 using alten_test.Core.Models.Authentication;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -21,13 +22,18 @@ namespace alten_test.PresentationLayer.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;  
         private readonly RoleManager<IdentityRole> _roleManager;  
-        private readonly IConfiguration _configuration;  
+        private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
   
-        public AuthController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)  
+        public AuthController(UserManager<ApplicationUser> userManager, 
+                              RoleManager<IdentityRole> roleManager, 
+                              IConfiguration configuration,
+                              IMapper mapper)  
         {  
             _userManager = userManager;  
             _roleManager = roleManager;  
             _configuration = configuration;
+            _mapper = mapper;
         }
         
         [HttpPost]  
@@ -59,10 +65,14 @@ namespace alten_test.PresentationLayer.Controllers
                     expires: DateTime.Now.AddHours(3),  
                     claims: authClaims,  
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)  
-                    );  
+                    );
+
+                var userDto = _mapper.Map<ApplicationUserDto>(user);
+                userDto.Roles = userRoles;
   
                 return Ok(new  
                 {  
+                    user = userDto,
                     token = new JwtSecurityTokenHandler().WriteToken(token),  
                     expiration = token.ValidTo  
                 });  
