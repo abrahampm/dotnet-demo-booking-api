@@ -10,10 +10,8 @@ using alten_test.Core.Models.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Ubiety.Dns.Core;
 
 namespace alten_test.PresentationLayer.Controllers
 {
@@ -43,7 +41,8 @@ namespace alten_test.PresentationLayer.Controllers
   
                 var authClaims = new List<Claim>  
                 {  
-                    new Claim(ClaimTypes.Email, user.Email),  
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),  
                 };  
   
@@ -90,8 +89,18 @@ namespace alten_test.PresentationLayer.Controllers
             };  
             var result = await _userManager.CreateAsync(user, model.Password);  
             if (!result.Succeeded)  
-                return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponseDto { Status = "Error", Message = "User creation failed! Please check user details and try again." });  
-  
+                return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponseDto { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+
+            if (!await _roleManager.RoleExistsAsync(ApplicationUserRoles.User))
+            {
+                await _roleManager.CreateAsync(new IdentityRole(ApplicationUserRoles.User));
+            }
+            
+            if (await _roleManager.RoleExistsAsync(ApplicationUserRoles.User))  
+            {  
+                await _userManager.AddToRoleAsync(user, ApplicationUserRoles.User);  
+            } 
+
             return Ok(new AuthResponseDto { Status = "Success", Message = "User created successfully!" });  
         }  
   
@@ -114,19 +123,19 @@ namespace alten_test.PresentationLayer.Controllers
             };  
             var result = await _userManager.CreateAsync(user, model.Password);  
             if (!result.Succeeded)  
-                return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponseDto { Status = "Error", Message = "User creation failed! Please check user details and try again." });  
-  
-            if (!await _roleManager.RoleExistsAsync(ApplicationUserRoles.Admin))  
-                await _roleManager.CreateAsync(new IdentityRole(ApplicationUserRoles.Admin));  
-            if (!await _roleManager.RoleExistsAsync(ApplicationUserRoles.User))  
-                await _roleManager.CreateAsync(new IdentityRole(ApplicationUserRoles.User));  
-  
+                return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponseDto { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+
+            if (!await _roleManager.RoleExistsAsync(ApplicationUserRoles.Admin))
+            {
+                await _roleManager.CreateAsync(new IdentityRole(ApplicationUserRoles.Admin));
+            }
+
             if (await _roleManager.RoleExistsAsync(ApplicationUserRoles.Admin))  
             {  
                 await _userManager.AddToRoleAsync(user, ApplicationUserRoles.Admin);  
             }  
   
-            return Ok(new AuthResponseDto { Status = "Success", Message = "User created successfully!" });  
+            return Ok(new AuthResponseDto { Status = "Success", Message = "Admin created successfully!" });  
         }  
     }
 }
