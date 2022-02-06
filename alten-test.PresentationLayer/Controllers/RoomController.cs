@@ -27,7 +27,9 @@ namespace alten_test.PresentationLayer.Controllers
         // GET: api/Room
         [HttpGet]
         [Produces("application/json")]
-        public async Task<ActionResult<PaginationResultDto<RoomDto>>> GetRooms(
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResultDto<RoomDto>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetRooms(
             [FromQuery] int pageNumber,
             [FromQuery] int pageSize,
             [FromQuery] string filterBy,
@@ -83,29 +85,64 @@ namespace alten_test.PresentationLayer.Controllers
 
             var pageInfo = new PaginationInfo(pageNumber, pageSize, sortProperty, sortDirection, filterProperty, searchTerm);
 
-            return await _roomService.List(pageInfo);
+            var list = await _roomService.List(pageInfo);
+            
+            switch (list.ResultType)
+            {
+                case ServiceResultType.Success:
+                    var pageRoomDto = ((SuccessResult<PaginationResultDto<RoomDto>>) list).Result;
+                    return Ok(pageRoomDto);
+                    
+                case ServiceResultType.NoPermission:
+                    return Unauthorized();
+                    
+                case ServiceResultType.NotFound:
+                    return NotFound();
+                    
+                case ServiceResultType.Error:
+                    var listError = (ErrorResult) list;
+                    return StatusCode(StatusCodes.Status500InternalServerError, listError.Error);
+                        
+            }
+
+            return NoContent();
         }
         
         // GET: api/Room/5
         [HttpGet("{id}")]
+        [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoomDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<RoomDto>> GetRoom(int id)
+        public async Task<IActionResult> GetRoom(int id)
         {
-            var roomDto = await _roomService.FindById(id);
+            var getResult = await _roomService.FindById(id);
 
-            if (roomDto == null)
+            switch (getResult.ResultType)
             {
-                return NotFound();
+                case ServiceResultType.Success:
+                    var roomDto = ((SuccessResult<RoomDto>) getResult).Result;
+                    return Ok(roomDto);
+                    
+                case ServiceResultType.NoPermission:
+                    return Unauthorized();
+                    
+                case ServiceResultType.NotFound:
+                    return NotFound();
+                    
+                case ServiceResultType.Error:
+                    var getError = (ErrorResult) getResult;
+                    return StatusCode(StatusCodes.Status500InternalServerError, getError.Error);
+                        
             }
 
-            return roomDto;
+            return NoContent();
         }
         
         // PUT: api/Room/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoomDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PutRoom(int id, RoomDto room)
         {
@@ -120,18 +157,29 @@ namespace alten_test.PresentationLayer.Controllers
 
             try
             {
-                await _roomService.Update(room);
+                var update = await _roomService.Update(room);
+                
+                switch (update.ResultType)
+                {
+                    case ServiceResultType.Success:
+                        var updateRoomDto = ((SuccessResult<RoomDto>) update).Result;
+                        return Ok(updateRoomDto);
+                        
+                    case ServiceResultType.NoPermission:
+                        return Unauthorized();
+                        
+                    case ServiceResultType.NotFound:
+                        return NotFound();
+                        
+                    case ServiceResultType.Error:
+                        var updateError = (ErrorResult) update;
+                        return StatusCode(StatusCodes.Status500InternalServerError, updateError.Error);
+                        
+                }
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_roomService.RoomExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             return NoContent();
@@ -140,18 +188,34 @@ namespace alten_test.PresentationLayer.Controllers
         // POST: api/Room
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<RoomDto>> PostRoom(RoomDtoInput roomDtoInput)
+        public async Task<IActionResult> PostRoom(RoomDtoInput roomDtoInput)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var roomDto = await _roomService.Create(roomDtoInput);
+            var create = await _roomService.Create(roomDtoInput);
             
-            return CreatedAtAction(nameof(GetRoom), new { id = roomDto.Id }, roomDto);
+            switch (create.ResultType)
+            {
+                case ServiceResultType.Success:
+                    var roomDto = ((SuccessResult<RoomDto>) create).Result;
+                    return CreatedAtAction(nameof(PostRoom), new { id = roomDto.Id }, roomDto);
+                    
+                case ServiceResultType.NoPermission:
+                    return Unauthorized();
+                    
+                case ServiceResultType.Error:
+                    var createError = (ErrorResult) create;
+                    return StatusCode(StatusCodes.Status500InternalServerError, createError.Error);
+                        
+            }
+
+            return NoContent();
         }
 
         // DELETE: api/Room/5
@@ -159,12 +223,24 @@ namespace alten_test.PresentationLayer.Controllers
         public async Task<IActionResult> DeleteRoom(int id)
         {
             
-            if (!_roomService.RoomExists(id))
-            {
-                return NotFound();
-            }
+            var delete = await _roomService.Delete(id);
 
-            await _roomService.Delete(id);
+            switch (delete.ResultType)
+            {
+                case ServiceResultType.Success:
+                    return Ok();
+                    
+                case ServiceResultType.NoPermission:
+                    return Unauthorized();
+                    
+                case ServiceResultType.NotFound:
+                    return NotFound();
+                    
+                case ServiceResultType.Error:
+                    var deleteError = (ErrorResult) delete;
+                    return StatusCode(StatusCodes.Status500InternalServerError, deleteError.Error);
+                        
+            }
 
             return NoContent();
         }

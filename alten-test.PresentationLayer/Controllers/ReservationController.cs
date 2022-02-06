@@ -35,8 +35,10 @@ namespace alten_test.PresentationLayer.Controllers
         // GET: api/Reservation
         [HttpGet]
         [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResultDto<ReservationDto>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize]
-        public async Task<ActionResult<PaginationResultDto<ReservationDto>>> GetReservations(
+        public async Task<IActionResult> GetReservations(
             [FromQuery] int pageNumber,
             [FromQuery] int pageSize,
             [FromQuery] string filterBy,
@@ -75,34 +77,70 @@ namespace alten_test.PresentationLayer.Controllers
             var user = await _userManager.GetUserAsync(User);
             var roles = await _userManager.GetRolesAsync(user);
             
-            return await _reservationService.List(pageInfo, user, roles);
+            var list = await _reservationService.List(pageInfo, user, roles);
+            
+            switch (list.ResultType)
+            {
+                case ServiceResultType.Success:
+                    var pageReservationDto = ((SuccessResult<PaginationResultDto<ReservationDto>>) list).Result;
+                    return Ok(pageReservationDto);
+                    
+                case ServiceResultType.NoPermission:
+                    return Unauthorized();
+                    
+                case ServiceResultType.NotFound:
+                    return NotFound();
+                    
+                case ServiceResultType.Error:
+                    var listError = (ErrorResult) list;
+                    return StatusCode(StatusCodes.Status500InternalServerError, listError.Error);
+                        
+            }
+
+            return NoContent();
         }
         
         // GET: api/Reservation/5
         [HttpGet("{id}")]
+        [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReservationDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize]
-        public async Task<ActionResult<ReservationDto>> GetReservation(int id)
+        public async Task<IActionResult> GetReservation(int id)
         {
             var user = await _userManager.GetUserAsync(User);
             var roles = await _userManager.GetRolesAsync(user);
             
-            var reservationDto = await _reservationService.FindById(id, user, roles);
+            var getResult = await _reservationService.FindById(id, user, roles);
 
-            if (reservationDto == null)
+            switch (getResult.ResultType)
             {
-                return NotFound();
+                case ServiceResultType.Success:
+                    var reservationDto = ((SuccessResult<ReservationDto>) getResult).Result;
+                    return Ok(reservationDto);
+                    
+                case ServiceResultType.NoPermission:
+                    return Unauthorized();
+                    
+                case ServiceResultType.NotFound:
+                    return NotFound();
+                    
+                case ServiceResultType.Error:
+                    var getError = (ErrorResult) getResult;
+                    return StatusCode(StatusCodes.Status500InternalServerError, getError.Error);
+                        
             }
 
-            return reservationDto;
+            return NoContent();
         }
         
         // PUT: api/Reservation/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReservationDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize]
         public async Task<IActionResult> PutReservation(int id, ReservationDto reservationDto)
         {
@@ -114,29 +152,35 @@ namespace alten_test.PresentationLayer.Controllers
             {
                 return BadRequest();
             }
-            var roomId = reservationDto.Room.Id;
-            if (!_reservationService.ReservationExists(id) || !_roomService.RoomExists(roomId))
-            {
-                return NotFound();
-            }
-
+            
             var user = await _userManager.GetUserAsync(User);
             var roles = await _userManager.GetRolesAsync(user);
             
             try
             {
-                await _reservationService.Update(reservationDto, user, roles);
+                var update = await _reservationService.Update(reservationDto, user, roles);
+                
+                switch (update.ResultType)
+                {
+                    case ServiceResultType.Success:
+                        var updateReservationDto = ((SuccessResult<ReservationDto>) update).Result;
+                        return Ok(updateReservationDto);
+                        
+                    case ServiceResultType.NoPermission:
+                        return Unauthorized();
+                        
+                    case ServiceResultType.NotFound:
+                        return NotFound();
+                        
+                    case ServiceResultType.Error:
+                        var updateError = (ErrorResult) update;
+                        return StatusCode(StatusCodes.Status500InternalServerError, updateError.Error);
+                        
+                }
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_reservationService.ReservationExists(id) || !_roomService.RoomExists(roomId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             return NoContent();
@@ -145,25 +189,38 @@ namespace alten_test.PresentationLayer.Controllers
         // POST: api/Reservation
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ReservationDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize]
-        public async Task<ActionResult<ReservationDto>> PostReservation(ReservationDtoInput reservationDtoInput)
+        public async Task<IActionResult> PostReservation(ReservationDtoInput reservationDtoInput)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            if (!_roomService.RoomExists(reservationDtoInput.Room.Id))
-            {
-                return BadRequest();
-            }
+            
             var user = await _userManager.GetUserAsync(User);
             var roles = await _userManager.GetRolesAsync(user);
 
-            var reservationDto = await _reservationService.Create(reservationDtoInput, user, roles);
+            var create = await _reservationService.Create(reservationDtoInput, user, roles);
             
-            return CreatedAtAction(nameof(GetReservation), new { id = reservationDto.Id }, reservationDto);
+            switch (create.ResultType)
+            {
+                case ServiceResultType.Success:
+                    var reservationDto = ((SuccessResult<ReservationDto>) create).Result;
+                    return CreatedAtAction(nameof(PostReservation), new { id = reservationDto.Id }, reservationDto);
+                    
+                case ServiceResultType.NoPermission:
+                    return Unauthorized();
+                    
+                case ServiceResultType.Error:
+                    var createError = (ErrorResult) create;
+                    return StatusCode(StatusCodes.Status500InternalServerError, createError.Error);
+                        
+            }
+
+            return NoContent();
         }
 
         // DELETE: api/Reservation/5
@@ -171,16 +228,27 @@ namespace alten_test.PresentationLayer.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteReservation(int id)
         {
-            
-            if (!_reservationService.ReservationExists(id))
-            {
-                return NotFound();
-            }
-            
             var user = await _userManager.GetUserAsync(User);
             var roles = await _userManager.GetRolesAsync(user);
 
-            await _reservationService.Delete(id, user, roles);
+            var delete = await _reservationService.Delete(id, user, roles);
+            
+            switch (delete.ResultType)
+            {
+                case ServiceResultType.Success:
+                    return Ok();
+                    
+                case ServiceResultType.NoPermission:
+                    return Unauthorized();
+                    
+                case ServiceResultType.NotFound:
+                    return NotFound();
+                    
+                case ServiceResultType.Error:
+                    var deleteError = (ErrorResult) delete;
+                    return StatusCode(StatusCodes.Status500InternalServerError, deleteError.Error);
+                        
+            }
 
             return NoContent();
         }
@@ -190,19 +258,31 @@ namespace alten_test.PresentationLayer.Controllers
         // GET: api/Reservation/Availability
         [HttpGet("Availability")]
         [Produces("application/json")]
-        public async Task<ActionResult<List<RoomDto>>> GetAvailability(
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<RoomDto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetAvailability(
             [FromQuery] DateTime startDate,
             [FromQuery] DateTime endDate
         )
         {
-            var availableRooms = await _reservationService.GetAvailability(startDate, endDate);
-
-            if (availableRooms.Count == 0)
+            var available = await _reservationService.GetAvailability(startDate, endDate);
+            
+            switch (available.ResultType)
             {
-                return NotFound();
+                case ServiceResultType.Success:
+                    var availableRooms = ((SuccessResult<List<RoomDto>>) available).Result;
+                    return Ok(availableRooms);
+                    
+                case ServiceResultType.NotFound:
+                    return NotFound();
+                    
+                case ServiceResultType.Error:
+                    var createError = (ErrorResult) available;
+                    return StatusCode(StatusCodes.Status500InternalServerError, createError.Error);
+                        
             }
 
-            return availableRooms;
+            return NoContent();
         }
         
     }
