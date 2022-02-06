@@ -5,9 +5,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace alten_test.DataAccessLayer.Context
 {
-    public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<DatabaseContext>
+    public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
     {
-        public DatabaseContext CreateDbContext(string[] args)
+        public ApplicationDbContext CreateDbContext(string[] args)
         {
             var appSettingsPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(),
                 "../alten-test.PresentationLayer/")); 
@@ -17,9 +17,9 @@ namespace alten_test.DataAccessLayer.Context
 
             var connectionString = builder.Build().GetSection("ConnectionStrings").GetSection("MySqlServerConnection")
                 .Value;
-            var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
             optionsBuilder.UseMySQL(connectionString);
-            return new DatabaseContext(optionsBuilder.Options);
+            return new ApplicationDbContext(optionsBuilder.Options);
         }
     }
 }

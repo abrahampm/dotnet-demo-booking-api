@@ -7,30 +7,30 @@ namespace alten_test.DataAccessLayer.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly DatabaseContext _databaseContext;
+        private readonly ApplicationDbContext _applicationDbContext;
         private IReservationRepository _reservations;
         private IRepository<Contact> _contacts;
         private IRoomRepository _rooms;
 
         public UnitOfWork(IDatabaseContextFactory databaseContextFactory)
         {
-            _databaseContext = databaseContextFactory.GetContext();
+            _applicationDbContext = databaseContextFactory.GetContext();
         }
 
-        public IReservationRepository Reservations => _reservations ??= new ReservationRepository(_databaseContext);
+        public IReservationRepository Reservations => _reservations ??= new ReservationRepository(_applicationDbContext);
         
-        public IRepository<Contact> Contacts => _contacts ??= new Repository<Contact>(_databaseContext);
+        public IRepository<Contact> Contacts => _contacts ??= new Repository<Contact>(_applicationDbContext);
 
-        public IRoomRepository Rooms => _rooms ??= new RoomRepository(_databaseContext);
+        public IRoomRepository Rooms => _rooms ??= new RoomRepository(_applicationDbContext);
 
         public async Task<int> Save()
         {
-            return await _databaseContext.SaveChangesAsync();
+            return await _applicationDbContext.SaveChangesAsync();
         }
 
         public void Dispose()
         {
-            _databaseContext.Dispose();
+            _applicationDbContext.Dispose();
         }
         
     }

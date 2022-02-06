@@ -12,11 +12,11 @@ namespace alten_test.BusinessLayer.Utilities
     {
         protected override void Initialize()
         {
-            Container.RegisterType(
+            /*Container.RegisterType(
                 typeof(IDatabaseContextFactory),
                 typeof(DatabaseContextFactory),
                 null,
-                TypeLifetime.Transient);
+                TypeLifetime.Transient);*/
             
             Container.RegisterType(
                 typeof(IUnitOfWork),

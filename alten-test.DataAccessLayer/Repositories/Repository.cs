@@ -16,10 +16,10 @@ namespace alten_test.DataAccessLayer.Repositories
 {
     public class Repository<T> : IRepository<T> where T: BaseEntity
     {
-        protected readonly DatabaseContext _context;
+        protected readonly ApplicationDbContext _context;
         protected readonly DbSet<T> _entities;
 
-        public Repository(DatabaseContext context)
+        public Repository(ApplicationDbContext context)
         {
             _context = context;
             _entities = context.Set<T>();

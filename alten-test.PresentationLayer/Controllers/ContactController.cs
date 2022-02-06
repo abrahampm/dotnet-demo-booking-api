@@ -7,11 +7,13 @@ using alten_test.Core.Dto;
 using alten_test.Core.Models;
 using alten_test.BusinessLayer.Interfaces;
 using alten_test.Core.Utilities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace alten_test.PresentationLayer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles="Admin")]
     public class ContactController : ControllerBase
     {
         private readonly IContactService _contactService;

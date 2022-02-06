@@ -2,6 +2,7 @@ using Unity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -17,6 +18,12 @@ using Microsoft.OpenApi.Models;
 using alten_test.BusinessLayer.Interfaces;
 using alten_test.BusinessLayer.Services;
 using alten_test.BusinessLayer.Utilities;
+using alten_test.Core.Models.Authentication;
+using alten_test.DataAccessLayer.Context;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 
 namespace alten_test.PresentationLayer
@@ -67,10 +74,42 @@ namespace alten_test.PresentationLayer
                 })
             );
             
-            services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
-                .AddCertificate();
-            
-            services.AddControllers().AddControllersAsServices();;
+            services.AddControllers().AddControllersAsServices();
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseMySQL(Configuration.GetConnectionString("MySqlServerConnection")));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+                {
+                    options.User.RequireUniqueEmail = true;
+                    options.Password.RequiredLength = 5;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.SaveToken = true;
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidAudience = Configuration["JWT:ValidAudience"],
+                        ValidIssuer = Configuration["JWT:ValidIssuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
+                    };
+                });
+
             
             services.AddSwaggerGen(c =>
             {

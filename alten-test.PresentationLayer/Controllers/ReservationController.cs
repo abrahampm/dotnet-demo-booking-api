@@ -9,6 +9,7 @@ using alten_test.Core.Dto;
 using alten_test.Core.Models;
 using alten_test.BusinessLayer.Interfaces;
 using alten_test.Core.Utilities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace alten_test.PresentationLayer.Controllers
 {
@@ -32,6 +33,7 @@ namespace alten_test.PresentationLayer.Controllers
         // GET: api/Reservation
         [HttpGet]
         [Produces("application/json")]
+        [Authorize]
         public async Task<ActionResult<PaginationResultDto<ReservationDto>>> GetReservations(
             [FromQuery] int pageNumber,
             [FromQuery] int pageSize,
@@ -76,6 +78,7 @@ namespace alten_test.PresentationLayer.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReservationDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
         public async Task<ActionResult<ReservationDto>> GetReservation(int id)
         {
             var reservationDto = await _reservationService.FindById(id);
@@ -93,6 +96,7 @@ namespace alten_test.PresentationLayer.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize]
         public async Task<IActionResult> PutReservation(int id, ReservationDto reservationDto)
         {
             if (!ModelState.IsValid)
@@ -135,6 +139,7 @@ namespace alten_test.PresentationLayer.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize]
         public async Task<ActionResult<ReservationDto>> PostReservation(ReservationDtoInput reservationDtoInput)
         {
             if (!ModelState.IsValid)
@@ -162,6 +167,7 @@ namespace alten_test.PresentationLayer.Controllers
 
         // DELETE: api/Reservation/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteReservation(int id)
         {
             

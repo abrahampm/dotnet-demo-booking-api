@@ -15,7 +15,7 @@ namespace alten_test.DataAccessLayer.Repositories
 {
     public class ReservationRepository: Repository<Reservation>, IReservationRepository
     {
-        public ReservationRepository(DatabaseContext context) : base(context) { }
+        public ReservationRepository(ApplicationDbContext context) : base(context) { }
 
 
         public new IQueryable<Reservation> GetAll()

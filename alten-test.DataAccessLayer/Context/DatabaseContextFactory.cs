@@ -6,16 +6,16 @@ namespace alten_test.DataAccessLayer.Context
 {
     public class DatabaseContextFactory : IDatabaseContextFactory
     {
-        private readonly DatabaseContext _context;
+        private readonly ApplicationDbContext _context;
 
         public DatabaseContextFactory(IConfiguration configuration)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
             optionsBuilder.UseMySQL(configuration.GetConnectionString("MySqlServerConnection"));
-            _context = new DatabaseContext(optionsBuilder.Options);
+            _context = new ApplicationDbContext(optionsBuilder.Options);
         }
 
-        public DatabaseContext GetContext()
+        public ApplicationDbContext GetContext()
         {
             return _context;
         }

@@ -16,7 +16,7 @@ namespace alten_test.DataAccessLayer.Repositories
 {
     public class RoomRepository: Repository<Room>, IRoomRepository
     {
-        public RoomRepository(DatabaseContext context) : base(context) { }
+        public RoomRepository(ApplicationDbContext context) : base(context) { }
 
         public async Task<List<Room>> GetAvailableWithStoredProcedure(DateTime startDate, DateTime endDate)
         {

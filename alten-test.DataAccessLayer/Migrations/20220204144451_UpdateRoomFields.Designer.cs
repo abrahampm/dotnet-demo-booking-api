@@ -8,7 +8,7 @@ using alten_test.DataAccessLayer.Context;
 
 namespace alten_test.DataAccessLayer.Migrations
 {
-    [DbContext(typeof(DatabaseContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20220204144451_UpdateRoomFields")]
     partial class UpdateRoomFields
     {
