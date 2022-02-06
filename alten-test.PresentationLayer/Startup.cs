@@ -1,4 +1,5 @@
 using Unity;
+using AutoMapper;
 using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using alten_test.BusinessLayer.Interfaces;
 using alten_test.BusinessLayer.Services;
 using alten_test.BusinessLayer.Utilities;
+using alten_test.Core.Mapping;
 using alten_test.Core.Models.Authentication;
 using alten_test.DataAccessLayer.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -44,6 +46,16 @@ namespace alten_test.PresentationLayer
                 typeof(RoomService), 
                 null, 
                 TypeLifetime.Hierarchical);
+
+            var mapperConfig = new MapperConfiguration(config =>
+                config.AddProfile<MappingProfile>());
+            IMapper mapper = mapperConfig.CreateMapper();
+            
+            container.RegisterInstance(
+                typeof(IMapper), 
+                null, 
+                mapper, 
+                InstanceLifetime.Singleton);
             container.AddNewExtension<DependencyInjectionExtension>();
             container.AddExtension(new Diagnostic());
         }

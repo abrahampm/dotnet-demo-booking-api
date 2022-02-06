@@ -18,16 +18,6 @@ namespace alten_test.BusinessLayer.Utilities
                 null,
                 TypeLifetime.Transient);
 
-            var mapperConfig = new MapperConfiguration(config =>
-                config.AddProfile<MappingProfile>());
-            IMapper mapper = mapperConfig.CreateMapper();
-            
-            Container.RegisterInstance(
-                typeof(IMapper), 
-                null, 
-                mapper, 
-                InstanceLifetime.Singleton);
-
         }
     }
 }
