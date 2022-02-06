@@ -8,6 +8,7 @@ using alten_test.Core.Dto;
 using alten_test.Core.Models;
 using alten_test.Core.Interfaces;
 using alten_test.BusinessLayer.Interfaces;
+using alten_test.Core.Models.Authentication;
 using alten_test.DataAccessLayer.Interfaces;
 
 namespace alten_test.BusinessLayer.Services
@@ -27,50 +28,82 @@ namespace alten_test.BusinessLayer.Services
             _mapper = mapper;
         }
 
-        public async Task<ReservationDto> Create(ReservationDtoInput reservationDtoInput)
+        public async Task<ReservationDto> Create(ReservationDtoInput reservationDtoInput, ApplicationUser user, IList<string> roles)
         {
             var reservation = _mapper.Map<Reservation>(reservationDtoInput);
-            reservation.Contact = null;
             reservation.Room = null;
+            reservation.ApplicationUserId = user.Id;
             await _reservationRepository.Insert(reservation);
             await _unitOfWork.Save();
             var reservationDto = _mapper.Map<ReservationDto>(reservation);
             return reservationDto;
         }
 
-        public async Task<ReservationDto> FindById(int id)
+        public async Task<ReservationDto> FindById(int id, ApplicationUser user, IList<string> roles)
         {
             var reservation = await _reservationRepository.GetById(id);
-            var reservationDto = _mapper.Map<ReservationDto>(reservation);
-            return reservationDto;
+            if (reservation.ApplicationUserId == user.Id || roles.Contains(ApplicationUserRoles.Admin))
+            {
+                var reservationDto = _mapper.Map<ReservationDto>(reservation);
+                return reservationDto;    
+            }
+            else
+            {
+                return null;
+            }
+            
         }
 
-        public async Task<ReservationDto> Update(ReservationDto reservationDto)
+        public async Task<ReservationDto> Update(ReservationDto reservationDto, ApplicationUser user, IList<string> roles)
         {
-            var reservation = _mapper.Map<Reservation>(reservationDto);
-            reservation.Contact = null;
-            reservation.Room = null;
-            _reservationRepository.Update(reservation);
-            await _unitOfWork.Save();
-            return reservationDto;
+            var reservation = await _reservationRepository.GetById(reservationDto.Id);
+
+            if (reservation != null)
+            {
+                if (reservation.ApplicationUserId == user.Id || roles.Contains(ApplicationUserRoles.Admin))
+                {
+                    reservation = _mapper.Map<Reservation>(reservationDto);
+                    reservation.Room = null;
+                    _reservationRepository.Update(reservation);
+                    await _unitOfWork.Save();
+                    return reservationDto;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int id, ApplicationUser user, IList<string> roles)
         {
             var reservation = await _reservationRepository.GetById(id);
 
             if (reservation != null)
             {
-                _reservationRepository.Delete(reservation);
-                await _unitOfWork.Save();
+                if (reservation.ApplicationUserId == user.Id || roles.Contains(ApplicationUserRoles.Admin))
+                {
+                    _reservationRepository.Delete(reservation);
+                    await _unitOfWork.Save();    
+                }
             }
         }
 
-        public async Task<PaginationResultDto<ReservationDto>> List(IPaginationInfo pageInfo)
+        public async Task<PaginationResultDto<ReservationDto>> List(IPaginationInfo pageInfo, ApplicationUser user, IList<string> roles)
         {
-            
-            var pageData = await _reservationRepository.GetAllPaginated(pageInfo);
-            pageInfo.Total = await _reservationRepository.GetAll().CountAsync();
+            List<Reservation> pageData;
+            if (roles.Contains(ApplicationUserRoles.Admin))
+            {
+                pageData = await _reservationRepository.GetAllPaginated(pageInfo);
+                pageInfo.Total = await _reservationRepository.GetTotal();
+            } else {
+                pageData = await _reservationRepository.GetByUserPaginated(pageInfo, user);
+                pageInfo.Total = await _reservationRepository.GetTotalByUser(user);
+            }
             
             var pageInfoDto = _mapper.Map<PaginationInfoDto>(pageInfo);
             var pageDataDto = _mapper.Map<IEnumerable<ReservationDto>>(pageData);
