@@ -11,9 +11,9 @@ namespace alten_test.DataAccessLayer.Repositories
         private IReservationRepository _reservations;
         private IRoomRepository _rooms;
 
-        public UnitOfWork(IDatabaseContextFactory databaseContextFactory)
+        public UnitOfWork(ApplicationDbContext applicationDbContext)
         {
-            _applicationDbContext = databaseContextFactory.GetContext();
+            _applicationDbContext = applicationDbContext;
         }
 
         public IReservationRepository Reservations => _reservations ??= new ReservationRepository(_applicationDbContext);
