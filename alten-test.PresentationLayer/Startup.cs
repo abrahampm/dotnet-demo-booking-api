@@ -77,7 +77,7 @@ namespace alten_test.PresentationLayer
                 .AddDefaultTokenProviders();
 
 
-            services.AddAuthentication(options =>
+                services.AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
