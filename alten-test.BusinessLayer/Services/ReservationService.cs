@@ -32,10 +32,22 @@ namespace alten_test.BusinessLayer.Services
         public async Task<ServiceResult> Create(ReservationDtoInput reservationDtoInput, ApplicationUser user, IList<string> roles)
         {
             var reservation = _mapper.Map<Reservation>(reservationDtoInput);
+
+            var validate = await _validateReservation(reservation);
+
+            if (validate.ResultType == ServiceResultType.Error)
+            {
+                return validate;
+            }
+            
+            // Unset related entity before inserting in the database
             reservation.Room = null;
+            // Set current user id to the reservation
             reservation.ApplicationUserId = user.Id;
+            
             await _reservationRepository.Insert(reservation);
             await _unitOfWork.Save();
+            
             var reservationDto = _mapper.Map<ReservationDto>(reservation);
             return new SuccessResult<ReservationDto>(reservationDto);
         }
@@ -73,9 +85,20 @@ namespace alten_test.BusinessLayer.Services
                 if (reservation.ApplicationUserId == user.Id || roles.Contains(ApplicationUserRoles.Admin))
                 {
                     reservation = _mapper.Map<Reservation>(reservationDto);
+                    
+                    var validate = await _validateReservation(reservation);
+
+                    if (validate.ResultType == ServiceResultType.Error)
+                    {
+                        return validate;
+                    }
+                    
                     reservation.Room = null;
+                    
                     _reservationRepository.Update(reservation);
                     await _unitOfWork.Save();
+                    
+                    reservationDto = _mapper.Map<ReservationDto>(reservation);
                     return new SuccessResult<ReservationDto>(reservationDto);
                 }
                 else
@@ -152,6 +175,40 @@ namespace alten_test.BusinessLayer.Services
         public bool ReservationExists(int id)
         {
             return _reservationRepository.Exists(id);
+        }
+
+        private async Task<ServiceResult> _validateReservation(Reservation reservation)
+        {
+            // Check reservation start and end dates
+            if (DateTime.Compare(reservation.StartDate, reservation.EndDate) > 0)
+            {
+                return new ErrorResult("Reservation start date is later than end date!");
+            }
+            
+            if (DateTime.Compare(reservation.StartDate, DateTime.Today.AddDays(1)) < 0)
+            {
+                return new ErrorResult("Reservation must start at least the next day of booking!");
+            }
+            
+            if (DateTime.Compare(reservation.EndDate, DateTime.Today.AddDays(30)) > 0)
+            {
+                return new ErrorResult("Reservation can't be done with more than 30 days in advance!");
+            }
+            
+            if (DateTime.Compare(reservation.StartDate.AddDays(3), reservation.EndDate) < 0)
+            {
+                return new ErrorResult("Reservation can't be longer than 3 days!");
+            }
+            
+            // Check if room is available during reservation dates 
+            var availableRooms =
+                await _roomRepository.GetAvailableWithStoredProcedure(reservation.StartDate, reservation.EndDate);
+            if (!availableRooms.Exists(r => r.Id == reservation.RoomId))
+            {
+                return new ErrorResult("Room unavailable during that dates!");
+            }
+
+            return new SuccessResult();
         }
     }
 }
