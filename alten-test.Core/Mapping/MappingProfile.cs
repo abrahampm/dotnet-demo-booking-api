@@ -1,6 +1,7 @@
 using AutoMapper;
 using alten_test.Core.Dto;
 using alten_test.Core.Models;
+using alten_test.Core.Models.Authentication;
 using alten_test.Core.Utilities;
 
 namespace alten_test.Core.Mapping
@@ -16,7 +17,8 @@ namespace alten_test.Core.Mapping
             CreateMap<Room, RoomDto>().ReverseMap();
             CreateMap<RoomDtoInput, RoomDto>().ReverseMap();
             CreateMap<RoomDtoInput, Room>();
-
+            
+            CreateMap<ApplicationUser, ApplicationUserDto>();
             CreateMap<PaginationInfo,PaginationInfoDto>();
         }
     }
