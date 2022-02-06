@@ -4,21 +4,22 @@ using System.Threading.Tasks;
 using alten_test.Core.Dto;
 using alten_test.Core.Interfaces;
 using alten_test.Core.Models;
+using alten_test.Core.Utilities;
 
 
 namespace alten_test.BusinessLayer.Interfaces
 {
     public interface IRoomService
     {
-        Task<RoomDto> Create(RoomDtoInput room);
+        Task<ServiceResult> Create(RoomDtoInput room);
 
-        Task<RoomDto> FindById(int id);
+        Task<ServiceResult> FindById(int id);
 
-        Task<RoomDto> Update(RoomDto room);
+        Task<ServiceResult> Update(RoomDto room);
 
-        Task Delete(int id);
+        Task<ServiceResult> Delete(int id);
 
-        Task<PaginationResultDto<RoomDto>> List(IPaginationInfo pageInfo);
+        Task<ServiceResult> List(IPaginationInfo pageInfo);
 
         bool RoomExists(int id);
     }

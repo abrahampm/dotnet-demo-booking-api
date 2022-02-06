@@ -8,6 +8,7 @@ using alten_test.Core.Dto;
 using alten_test.Core.Models;
 using alten_test.Core.Interfaces;
 using alten_test.BusinessLayer.Interfaces;
+using alten_test.Core.Utilities;
 using alten_test.DataAccessLayer.Interfaces;
 
 namespace alten_test.BusinessLayer.Services
@@ -25,31 +26,31 @@ namespace alten_test.BusinessLayer.Services
             _mapper = mapper;
         }
 
-        public async Task<RoomDto> Create(RoomDtoInput roomDtoInput)
+        public async Task<ServiceResult> Create(RoomDtoInput roomDtoInput)
         {
             var room = _mapper.Map<Room>(roomDtoInput);
             await _repository.Insert(room);
             await _unitOfWork.Save();
             var roomDto = _mapper.Map<RoomDto>(room);
-            return roomDto;
+            return new SuccessResult<RoomDto>(roomDto);
         }
 
-        public async Task<RoomDto> FindById(int id)
+        public async Task<ServiceResult> FindById(int id)
         {
             var room = await _repository.GetById(id);
             var roomDto = _mapper.Map<RoomDto>(room);
-            return roomDto;
+            return new SuccessResult<RoomDto>(roomDto);
         }
 
-        public async Task<RoomDto> Update(RoomDto roomDto)
+        public async Task<ServiceResult> Update(RoomDto roomDto)
         {
             var room = _mapper.Map<Room>(roomDto);
             _repository.Update(room);
             await _unitOfWork.Save();
-            return roomDto;
+            return new SuccessResult<RoomDto>(roomDto);
         }
 
-        public async Task Delete(int id)
+        public async Task<ServiceResult> Delete(int id)
         {
             var room = await _repository.GetById(id);
 
@@ -57,10 +58,15 @@ namespace alten_test.BusinessLayer.Services
             {
                 _repository.Delete(room);
                 await _unitOfWork.Save();
+                return new SuccessResult();
+            }
+            else
+            {
+                return new NotFoundResult();
             }
         }
 
-        public async Task<PaginationResultDto<RoomDto>> List(IPaginationInfo pageInfo)
+        public async Task<ServiceResult> List(IPaginationInfo pageInfo)
         {
             var pageData = await _repository.GetAllPaginated(pageInfo);
             pageInfo.Total = await _repository.GetAll().CountAsync();
@@ -68,7 +74,8 @@ namespace alten_test.BusinessLayer.Services
             var pageInfoDto = _mapper.Map<PaginationInfoDto>(pageInfo);
             var pageDataDto = _mapper.Map<IEnumerable<RoomDto>>(pageData);
 
-            return new PaginationResultDto<RoomDto>(pageInfoDto, pageDataDto);
+            var page = new PaginationResultDto<RoomDto>(pageInfoDto, pageDataDto);
+            return new SuccessResult<PaginationResultDto<RoomDto>>(page);
         }
         
         public bool RoomExists(int id)
