@@ -22,7 +22,7 @@ namespace alten_test.DataAccessLayer.Repositories
 
         public new IQueryable<Reservation> GetAll()
         {
-            return (from e in _entities select e).Include("Contact").Include("Room");
+            return (from e in _entities select e).Include("ApplicationUser").Include("Room");
         }
 
         public new async Task<Reservation> GetById(int id)
