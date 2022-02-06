@@ -8,7 +8,6 @@ namespace alten_test.DataAccessLayer.Context
 {
     public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     {
-        public DbSet<Contact> Contacts { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Room> Rooms { get; set; }
 
@@ -16,10 +15,6 @@ namespace alten_test.DataAccessLayer.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Reservation>()
-                .HasOne(p => p.Contact)
-                .WithMany(b => b.Reservations)
-                .HasForeignKey(p => p.ContactId);
             modelBuilder.Entity<Reservation>()
                 .HasOne(p => p.Room)
                 .WithMany(b => b.Reservations)

@@ -9,10 +9,6 @@ namespace alten_test.Core.Mapping
     {
         public MappingProfile()
         {
-            CreateMap<Contact, ContactDto>().ReverseMap();
-            CreateMap<ContactDtoInput, ContactDto>().ReverseMap();
-            CreateMap<ContactDtoInput, Contact>();
-            
             CreateMap<Reservation, ReservationDto>().ReverseMap();
             CreateMap<ReservationDtoInput, ReservationDto>().ReverseMap();
             CreateMap<ReservationDtoInput, Reservation>();

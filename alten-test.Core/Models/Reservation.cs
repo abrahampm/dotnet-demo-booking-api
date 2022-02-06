@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using alten_test.Core.Models.Authentication;
 
 namespace alten_test.Core.Models
 {
@@ -12,10 +13,10 @@ namespace alten_test.Core.Models
         public DateTime EndDate { get; set; }
         
         [Required]
-        public int ContactId { get; set; }
+        public string ApplicationUserId { get; set; }
 
         [Required]
-        public Contact Contact { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
 
         [Required]
         public int RoomId { get; set; }

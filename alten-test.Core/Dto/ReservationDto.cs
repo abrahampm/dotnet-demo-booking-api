@@ -13,10 +13,7 @@ namespace alten_test.Core.Dto
         
         [Required]
         public DateTime EndDate { get; set; }
-
-        [Required]
-        public ContactDto Contact { get; set; }
-
+        
         [Required]
         public RoomDto Room { get; set; }
 

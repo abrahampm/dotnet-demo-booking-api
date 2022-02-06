@@ -9,7 +9,6 @@ namespace alten_test.DataAccessLayer.Repositories
     {
         private readonly ApplicationDbContext _applicationDbContext;
         private IReservationRepository _reservations;
-        private IRepository<Contact> _contacts;
         private IRoomRepository _rooms;
 
         public UnitOfWork(IDatabaseContextFactory databaseContextFactory)
@@ -18,8 +17,6 @@ namespace alten_test.DataAccessLayer.Repositories
         }
 
         public IReservationRepository Reservations => _reservations ??= new ReservationRepository(_applicationDbContext);
-        
-        public IRepository<Contact> Contacts => _contacts ??= new Repository<Contact>(_applicationDbContext);
 
         public IRoomRepository Rooms => _rooms ??= new RoomRepository(_applicationDbContext);
 

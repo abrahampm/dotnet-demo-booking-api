@@ -5,8 +5,6 @@ namespace alten_test.DataAccessLayer.Interfaces
 {
     public interface IUnitOfWork
     {
-        IRepository<Contact> Contacts { get; }
-        
         IReservationRepository Reservations { get; }
 
         IRoomRepository Rooms { get; }

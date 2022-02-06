@@ -1,18 +1,10 @@
 using Unity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 using alten_test.BusinessLayer.Interfaces;
@@ -42,11 +34,6 @@ namespace alten_test.PresentationLayer
         // Configure Unity Container
         public void ConfigureContainer(IUnityContainer container)
         {
-            container.RegisterType(
-                typeof(IContactService),
-                typeof(ContactService),
-                null,
-                TypeLifetime.Hierarchical);
             container.RegisterType(
                 typeof(IReservationService), 
                 typeof(ReservationService), 
