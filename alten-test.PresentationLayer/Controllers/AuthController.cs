@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using alten_test.Core.Dto;
 using alten_test.Core.Dto.Authentication;
 using alten_test.Core.Models.Authentication;
 using AutoMapper;
@@ -86,7 +87,7 @@ namespace alten_test.PresentationLayer.Controllers
         {  
             var userExists = await _userManager.FindByEmailAsync(model.Email);  
             if (userExists != null)  
-                return StatusCode(StatusCodes.Status409Conflict, new AuthResponseDto { Status = "Error", Message = "User already exists!" });  
+                return StatusCode(StatusCodes.Status409Conflict, new StatusResponseDto { Status = "Error", Message = "User already exists!" });  
   
             ApplicationUser user = new ApplicationUser()  
             {  
@@ -99,7 +100,7 @@ namespace alten_test.PresentationLayer.Controllers
             };  
             var result = await _userManager.CreateAsync(user, model.Password);  
             if (!result.Succeeded)  
-                return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponseDto { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+                return StatusCode(StatusCodes.Status500InternalServerError, new StatusResponseDto { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
             if (!await _roleManager.RoleExistsAsync(ApplicationUserRoles.User))
             {
@@ -111,7 +112,7 @@ namespace alten_test.PresentationLayer.Controllers
                 await _userManager.AddToRoleAsync(user, ApplicationUserRoles.User);  
             } 
 
-            return Ok(new AuthResponseDto { Status = "Success", Message = "User created successfully!" });  
+            return Ok(new StatusResponseDto { Status = "Success", Message = "User created successfully!" });  
         }  
   
         [HttpPost]  
@@ -120,7 +121,7 @@ namespace alten_test.PresentationLayer.Controllers
         {  
             var userExists = await _userManager.FindByEmailAsync(model.Email);  
             if (userExists != null)  
-                return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponseDto { Status = "Error", Message = "User already exists!" });  
+                return StatusCode(StatusCodes.Status500InternalServerError, new StatusResponseDto { Status = "Error", Message = "User already exists!" });  
   
             ApplicationUser user = new ApplicationUser()  
             {  
@@ -133,7 +134,7 @@ namespace alten_test.PresentationLayer.Controllers
             };  
             var result = await _userManager.CreateAsync(user, model.Password);  
             if (!result.Succeeded)  
-                return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponseDto { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+                return StatusCode(StatusCodes.Status500InternalServerError, new StatusResponseDto { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
             if (!await _roleManager.RoleExistsAsync(ApplicationUserRoles.Admin))
             {
@@ -145,7 +146,7 @@ namespace alten_test.PresentationLayer.Controllers
                 await _userManager.AddToRoleAsync(user, ApplicationUserRoles.Admin);  
             }  
   
-            return Ok(new AuthResponseDto { Status = "Success", Message = "Admin created successfully!" });  
+            return Ok(new StatusResponseDto { Status = "Success", Message = "Admin created successfully!" });  
         }  
     }
 }
