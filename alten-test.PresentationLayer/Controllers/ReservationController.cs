@@ -174,7 +174,11 @@ namespace alten_test.PresentationLayer.Controllers
                         
                     case ServiceResultType.Error:
                         var updateError = (ErrorResult) update;
-                        return StatusCode(StatusCodes.Status500InternalServerError, updateError.Error);
+                        return StatusCode(StatusCodes.Status500InternalServerError, new StatusResponseDto
+                        {
+                            Status = "Error",
+                            Message = updateError.Error
+                        });
                         
                 }
             }
@@ -213,11 +217,14 @@ namespace alten_test.PresentationLayer.Controllers
                     
                 case ServiceResultType.NoPermission:
                     return Unauthorized();
-                    
+
                 case ServiceResultType.Error:
                     var createError = (ErrorResult) create;
-                    return StatusCode(StatusCodes.Status500InternalServerError, createError.Error);
-                        
+                    return StatusCode(StatusCodes.Status500InternalServerError, new StatusResponseDto
+                    {
+                        Status = "Error",
+                        Message = createError.Error
+                    });
             }
 
             return NoContent();
