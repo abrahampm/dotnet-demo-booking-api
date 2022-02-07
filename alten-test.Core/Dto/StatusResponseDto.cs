@@ -1,6 +1,6 @@
-namespace alten_test.Core.Dto.Authentication
+namespace alten_test.Core.Dto
 {
-    public class AuthResponseDto
+    public class StatusResponseDto
     {
         public string Status { get; set; }  
         public string Message { get; set; }  
