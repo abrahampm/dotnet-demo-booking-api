@@ -69,3 +69,7 @@ And finally run the development server with:\
 CORS is configured in the Web API to allow cross-origin request from http://localhost:4200 which is the Angular Development Server default url.
 
 
+###Project GitHub Repositories:
+- https://github.com/abrahampm/alten-test-booking-api
+- https://github.com/abrahampm/alten-test-booking-spa
+
