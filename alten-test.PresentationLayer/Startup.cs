@@ -136,6 +136,8 @@ namespace alten_test.PresentationLayer
             app.UseAuthentication();
 
             app.UseAuthorization();
+            
+            app.UseCors(AppCorsPolicy);
 
             app.UseEndpoints(endpoints =>
             {
