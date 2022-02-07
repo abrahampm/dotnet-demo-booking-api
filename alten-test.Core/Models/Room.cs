@@ -19,7 +19,7 @@ namespace alten_test.Core.Models
         [Range(1, 10)]
         public int Capacity { get; set; }
         
-        public List<Reservation> Reservations { get; set; }
+        public virtual List<Reservation> Reservations { get; set; }
 
     }
 
