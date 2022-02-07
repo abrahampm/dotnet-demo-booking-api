@@ -22,18 +22,35 @@ namespace alten_test.DataAccessLayer.Repositories
 
         public new IQueryable<Reservation> GetAll()
         {
-            return (from e in _entities select e).Include("ApplicationUser").Include("Room");
+            return _entities.Include(e=> e.Room).Include(e => e.ApplicationUser).AsQueryable();
+        }
+        
+        public new async Task<List<Reservation>> GetAllPaginated(IPaginationInfo pageInfo)
+        {
+            var ent = _entities.Include(e => e.Room).Include(e => e.ApplicationUser).AsQueryable();
+
+            if (pageInfo.HasFiltering())
+            {
+                ent = ent.FilterBy(pageInfo.FilterPropertyName, pageInfo.FilterTerm);
+            }
+
+            if (pageInfo.HasSorting())
+            {
+                ent = ent.SortBy(pageInfo.SortPropertyName, pageInfo.SortDirection == PageDirection.Ascending);
+            }
+
+            return await ent.Paginate(pageInfo.PageNumber, pageInfo.PageSize).ToListAsync();
         }
 
         public new async Task<Reservation> GetById(int id)
         {
-            return await _entities.AsNoTracking().Include(r => r.Room)
+            return await _entities.Include(r => r.Room).AsNoTracking()
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
         public async Task<List<Reservation>> GetByUserPaginated(IPaginationInfo pageInfo, ApplicationUser user)
         {
-            var ent = _entities.AsQueryable().Where(e => e.ApplicationUserId == user.Id);
+            var ent = _entities.Include(r => r.Room).AsQueryable().Where(e => e.ApplicationUserId == user.Id);
             
             if (pageInfo.HasFiltering())
             {

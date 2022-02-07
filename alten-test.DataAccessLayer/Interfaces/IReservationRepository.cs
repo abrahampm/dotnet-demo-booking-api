@@ -13,6 +13,8 @@ namespace alten_test.DataAccessLayer.Interfaces
     {
         new IQueryable<Reservation> GetAll();
 
+        new Task<List<Reservation>> GetAllPaginated(IPaginationInfo pageInfo);
+        
         new Task<Reservation> GetById(int id);
 
         Task<List<Reservation>> GetByUserPaginated(IPaginationInfo pageInfo, ApplicationUser user);
