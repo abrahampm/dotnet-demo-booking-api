@@ -21,6 +21,8 @@ namespace alten_test.Core.Dto
         [Required]
         [Range(1, 10)]
         public int Capacity { get; set; }
+        
+        public RoomStatus Status { get; set; } 
                 
     }
 }
