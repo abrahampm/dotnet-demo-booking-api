@@ -33,13 +33,22 @@ namespace alten_test.BusinessLayer.Services
         {
             var reservation = _mapper.Map<Reservation>(reservationDtoInput);
 
-            var validate = await _validateReservation(reservation);
+            var validateDates = _validateReservationDates(reservation);
 
-            if (validate.ResultType == ServiceResultType.Error)
+            if (validateDates.ResultType == ServiceResultType.Error)
             {
-                return validate;
+                return validateDates;
             }
             
+            // Check if room is available during reservation dates 
+            
+            var validateRoom = await _validateReservationRoom(reservation);
+
+            if (validateRoom.ResultType == ServiceResultType.Error)
+            {
+                return validateRoom;
+            }
+
             // Unset related entity before inserting in the database
             reservation.Room = null;
             // Set current user id to the reservation
@@ -84,14 +93,28 @@ namespace alten_test.BusinessLayer.Services
             {
                 if (reservation.ApplicationUserId == user.Id || roles.Contains(ApplicationUserRoles.Admin))
                 {
-                    reservation = _mapper.Map<Reservation>(reservationDto);
-                    
-                    var validate = await _validateReservation(reservation);
 
-                    if (validate.ResultType == ServiceResultType.Error)
+                    if (reservation.StartDate != reservationDto.StartDate ||
+                        reservation.EndDate != reservationDto.EndDate)
                     {
-                        return validate;
+                        // Check if room is available during reservation dates 
+                        var validateRoom = await _validateReservationRoom(reservation);
+    
+                        if (validateRoom.ResultType == ServiceResultType.Error)
+                        {
+                            return validateRoom;
+                        }
+                        
+                        reservation = _mapper.Map<Reservation>(reservationDto);
+                    
+                        var validateDates = _validateReservationDates(reservation);
+    
+                        if (validateDates.ResultType == ServiceResultType.Error)
+                        {
+                            return validateDates;
+                        }
                     }
+                    
                     
                     reservation.Room = null;
                     
@@ -160,15 +183,8 @@ namespace alten_test.BusinessLayer.Services
         {
             var availableRooms = await _roomRepository.GetAvailableWithStoredProcedure(startDate, endDate);
 
-            if (availableRooms.Count == 0)
-            {
-                return new NotFoundResult();
-            }
-            else
-            {
-                var availableRoomsDto = _mapper.Map<List<RoomDto>>(availableRooms);
-                return new SuccessResult<List<RoomDto>>(availableRoomsDto);    
-            }
+            var availableRoomsDto = _mapper.Map<List<RoomDto>>(availableRooms);
+            return new SuccessResult<List<RoomDto>>(availableRoomsDto);    
             
         }
 
@@ -177,7 +193,7 @@ namespace alten_test.BusinessLayer.Services
             return _reservationRepository.Exists(id);
         }
 
-        private async Task<ServiceResult> _validateReservation(Reservation reservation)
+        private ServiceResult _validateReservationDates(Reservation reservation)
         {
             // Check reservation start and end dates
             if (DateTime.Compare(reservation.StartDate, reservation.EndDate) > 0)
@@ -195,12 +211,16 @@ namespace alten_test.BusinessLayer.Services
                 return new ErrorResult("Reservation can't be done with more than 30 days in advance!");
             }
             
-            if (DateTime.Compare(reservation.StartDate.AddDays(3), reservation.EndDate) < 0)
+            if (DateTime.Compare(reservation.StartDate.AddDays(2), reservation.EndDate) < 0)
             {
                 return new ErrorResult("Reservation can't be longer than 3 days!");
             }
-            
-            // Check if room is available during reservation dates 
+
+            return new SuccessResult();
+        }
+
+        private async Task<ServiceResult> _validateReservationRoom(Reservation reservation)
+        {
             var availableRooms =
                 await _roomRepository.GetAvailableWithStoredProcedure(reservation.StartDate, reservation.EndDate);
             if (!availableRooms.Exists(r => r.Id == reservation.RoomId))
