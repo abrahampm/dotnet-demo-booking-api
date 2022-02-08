@@ -26,7 +26,7 @@ DELIMITER $$
 --
 -- Procedures
 --
-CREATE DEFINER=`phpmyadmin`@`localhost` PROCEDURE `GetAvailableRooms` (IN `startDate` DATE, IN `endDate` DATE)  NO SQL
+CREATE PROCEDURE `GetAvailableRooms` (IN `startDate` DATE, IN `endDate` DATE)  NO SQL
 BEGIN
 SELECT * FROM `Rooms` WHERE `Rooms`.`Status` = 1 AND `Rooms`.`Id` NOT IN (
 	SELECT `Reservations`.`RoomId` FROM `Reservations` WHERE `Reservations`.`EndDate` >= startDate AND `Reservations`.`StartDate` <=  endDate
@@ -46,7 +46,7 @@ CREATE TABLE `AspNetRoleClaims` (
   `RoleId` varchar(85) NOT NULL,
   `ClaimType` text,
   `ClaimValue` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -56,10 +56,10 @@ CREATE TABLE `AspNetRoleClaims` (
 
 CREATE TABLE `AspNetRoles` (
   `Id` varchar(85) NOT NULL,
-  `Name` varchar(256) DEFAULT NULL,
-  `NormalizedName` varchar(256) DEFAULT NULL,
+  `Name` varchar(191) DEFAULT NULL,
+  `NormalizedName` varchar(191) DEFAULT NULL,
   `ConcurrencyStamp` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `AspNetRoles`
@@ -80,7 +80,7 @@ CREATE TABLE `AspNetUserClaims` (
   `UserId` varchar(85) NOT NULL,
   `ClaimType` text,
   `ClaimValue` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -93,7 +93,7 @@ CREATE TABLE `AspNetUserLogins` (
   `ProviderKey` varchar(85) NOT NULL,
   `ProviderDisplayName` text,
   `UserId` varchar(85) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -104,7 +104,7 @@ CREATE TABLE `AspNetUserLogins` (
 CREATE TABLE `AspNetUserRoles` (
   `UserId` varchar(85) NOT NULL,
   `RoleId` varchar(85) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `AspNetUserRoles`
@@ -131,10 +131,10 @@ CREATE TABLE `AspNetUsers` (
   `FirstName` text NOT NULL,
   `LastName` text NOT NULL,
   `BirthDate` datetime NOT NULL,
-  `UserName` varchar(256) DEFAULT NULL,
-  `NormalizedUserName` varchar(256) DEFAULT NULL,
-  `Email` varchar(256) DEFAULT NULL,
-  `NormalizedEmail` varchar(256) DEFAULT NULL,
+  `UserName` varchar(191) DEFAULT NULL,
+  `NormalizedUserName` varchar(191) DEFAULT NULL,
+  `Email` varchar(191) DEFAULT NULL,
+  `NormalizedEmail` varchar(191) DEFAULT NULL,
   `EmailConfirmed` tinyint(1) NOT NULL,
   `PasswordHash` text,
   `SecurityStamp` text,
@@ -145,7 +145,7 @@ CREATE TABLE `AspNetUsers` (
   `LockoutEnd` timestamp NULL DEFAULT NULL,
   `LockoutEnabled` tinyint(1) NOT NULL,
   `AccessFailedCount` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `AspNetUsers`
@@ -173,7 +173,7 @@ CREATE TABLE `AspNetUserTokens` (
   `LoginProvider` varchar(85) NOT NULL,
   `Name` varchar(85) NOT NULL,
   `Value` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -190,7 +190,7 @@ CREATE TABLE `Reservations` (
   `CreatedAt` datetime NOT NULL,
   `UpdatedAt` datetime NOT NULL,
   `ApplicationUserId` varchar(85) NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `Reservations`
@@ -220,7 +220,7 @@ CREATE TABLE `Rooms` (
   `CreatedAt` datetime NOT NULL,
   `UpdatedAt` datetime NOT NULL,
   `Capacity` int NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `Rooms`
@@ -246,7 +246,7 @@ INSERT INTO `Rooms` (`Id`, `Number`, `Status`, `Type`, `CreatedAt`, `UpdatedAt`,
 CREATE TABLE `__EFMigrationsHistory` (
   `MigrationId` varchar(150) NOT NULL,
   `ProductVersion` varchar(32) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `__EFMigrationsHistory`
