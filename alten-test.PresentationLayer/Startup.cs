@@ -66,7 +66,7 @@ namespace alten_test.PresentationLayer
             services.AddCors(options => options.AddPolicy(name: AppCorsPolicy,
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:4200", "https://localhost:4200");
+                    builder.WithOrigins("http://alten-test-abrahampm.vercel.app/", "https://alten-test-abrahampm.vercel.app/");
                     builder.AllowAnyHeader();
                     builder.AllowAnyMethod();
                     builder.AllowCredentials();
