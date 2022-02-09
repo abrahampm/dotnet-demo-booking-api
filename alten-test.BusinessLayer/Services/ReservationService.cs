@@ -97,6 +97,8 @@ namespace alten_test.BusinessLayer.Services
                     if (reservation.StartDate != reservationDto.StartDate ||
                         reservation.EndDate != reservationDto.EndDate)
                     {
+                        reservation = _mapper.Map<Reservation>(reservationDto);
+                        
                         // Check if room is available during reservation dates 
                         var validateRoom = await _validateReservationRoom(reservation);
     
@@ -104,8 +106,6 @@ namespace alten_test.BusinessLayer.Services
                         {
                             return validateRoom;
                         }
-                        
-                        reservation = _mapper.Map<Reservation>(reservationDto);
                     
                         var validateDates = _validateReservationDates(reservation);
     
