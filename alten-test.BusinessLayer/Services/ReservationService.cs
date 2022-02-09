@@ -117,6 +117,7 @@ namespace alten_test.BusinessLayer.Services
                     
                     
                     reservation.Room = null;
+                    reservation.ApplicationUserId = user.Id;
                     
                     _reservationRepository.Update(reservation);
                     await _unitOfWork.Save();
