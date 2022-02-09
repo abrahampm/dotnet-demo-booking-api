@@ -66,7 +66,7 @@ namespace alten_test.PresentationLayer
             services.AddCors(options => options.AddPolicy(name: AppCorsPolicy,
                 builder =>
                 {
-                    builder.WithOrigins("http://alten-test-abrahampm.vercel.app/", "https://alten-test-abrahampm.vercel.app/");
+                    builder.WithOrigins("http://alten-test-abrahampm.vercel.app", "https://alten-test-abrahampm.vercel.app");
                     builder.AllowAnyHeader();
                     builder.AllowAnyMethod();
                     builder.AllowCredentials();
@@ -132,12 +132,12 @@ namespace alten_test.PresentationLayer
             }
 
             app.UseRouting();
+            
+            app.UseCors(AppCorsPolicy);
 
             app.UseAuthentication();
 
             app.UseAuthorization();
-            
-            app.UseCors(AppCorsPolicy);
 
             app.UseEndpoints(endpoints =>
             {
