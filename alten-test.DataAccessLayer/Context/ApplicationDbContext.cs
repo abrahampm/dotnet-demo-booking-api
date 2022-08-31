@@ -27,25 +27,25 @@ namespace alten_test.DataAccessLayer.Context
                 .HasConversion<int>();
             
             // Fix maxlength issues with Identity and MySQL
-            modelBuilder.Entity<ApplicationUser>(e => e.Property(m => m.Id).HasMaxLength(85));
-            modelBuilder.Entity<IdentityRole>(e => e.Property(m => m.Id).HasMaxLength(85));
-            
-            modelBuilder.Entity<IdentityUserClaim<string>>(e => e.Property(m => m.Id).HasMaxLength(85));
-            modelBuilder.Entity<IdentityRoleClaim<string>>(e => e.Property(m => m.Id).HasMaxLength(85));
-
-            modelBuilder.Entity<IdentityUserLogin<string>>(e => e.Property(m => m.LoginProvider).HasMaxLength(85));
-            modelBuilder.Entity<IdentityUserLogin<string>>(e => e.Property(m => m.ProviderKey).HasMaxLength(85));
-
-            modelBuilder.Entity<IdentityUserToken<string>>(e => e.Property(m => m.LoginProvider).HasMaxLength(85));
-            modelBuilder.Entity<IdentityUserToken<string>>(e => e.Property(m => m.Name).HasMaxLength(85));
-            
+            // modelBuilder.Entity<ApplicationUser>(e => e.Property(m => m.Id).HasMaxLength(85));
+            // modelBuilder.Entity<IdentityRole>(e => e.Property(m => m.Id).HasMaxLength(85));
+            //
+            // modelBuilder.Entity<IdentityUserClaim<string>>(e => e.Property(m => m.Id).HasMaxLength(85));
+            // modelBuilder.Entity<IdentityRoleClaim<string>>(e => e.Property(m => m.Id).HasMaxLength(85));
+            //
+            // modelBuilder.Entity<IdentityUserLogin<string>>(e => e.Property(m => m.LoginProvider).HasMaxLength(85));
+            // modelBuilder.Entity<IdentityUserLogin<string>>(e => e.Property(m => m.ProviderKey).HasMaxLength(85));
+            //
+            // modelBuilder.Entity<IdentityUserToken<string>>(e => e.Property(m => m.LoginProvider).HasMaxLength(85));
+            // modelBuilder.Entity<IdentityUserToken<string>>(e => e.Property(m => m.Name).HasMaxLength(85));
+            //
             // Need this to run in MySQL Server Version 5.5.62 on production environment. The index limit is 767 bytes, and utf8mb4 characters are 4 bytes long, so we can only index up to 191 characters long fields
-            modelBuilder.Entity<ApplicationUser>(e => e.Property(m => m.Email).HasMaxLength(191));
-            modelBuilder.Entity<ApplicationUser>(e => e.Property(m => m.NormalizedEmail).HasMaxLength(191));
-            modelBuilder.Entity<ApplicationUser>(e => e.Property(m => m.UserName).HasMaxLength(191));
-            modelBuilder.Entity<ApplicationUser>(e => e.Property(m => m.NormalizedUserName).HasMaxLength(191));
-            modelBuilder.Entity<IdentityRole>(e => e.Property(m => m.Name).HasMaxLength(191));
-            modelBuilder.Entity<IdentityRole>(e => e.Property(m => m.NormalizedName).HasMaxLength(191));
+            // modelBuilder.Entity<ApplicationUser>(e => e.Property(m => m.Email).HasMaxLength(191));
+            // modelBuilder.Entity<ApplicationUser>(e => e.Property(m => m.NormalizedEmail).HasMaxLength(191));
+            // modelBuilder.Entity<ApplicationUser>(e => e.Property(m => m.UserName).HasMaxLength(191));
+            // modelBuilder.Entity<ApplicationUser>(e => e.Property(m => m.NormalizedUserName).HasMaxLength(191));
+            // modelBuilder.Entity<IdentityRole>(e => e.Property(m => m.Name).HasMaxLength(191));
+            // modelBuilder.Entity<IdentityRole>(e => e.Property(m => m.NormalizedName).HasMaxLength(191));
 
             
             

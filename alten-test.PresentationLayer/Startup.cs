@@ -1,5 +1,3 @@
-using Unity;
-using AutoMapper;
 using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,10 +12,14 @@ using alten_test.BusinessLayer.Utilities;
 using alten_test.Core.Mapping;
 using alten_test.Core.Models.Authentication;
 using alten_test.DataAccessLayer.Context;
+using alten_test.DataAccessLayer.Interfaces;
+using alten_test.DataAccessLayer.Repositories;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Unity;
 
 
 namespace alten_test.PresentationLayer
@@ -33,36 +35,19 @@ namespace alten_test.PresentationLayer
 
         public IConfiguration Configuration { get; }
         
-        // Configure Unity Container
-        public void ConfigureContainer(IUnityContainer container)
-        {
-            container.RegisterType(
-                typeof(IReservationService), 
-                typeof(ReservationService), 
-                null, 
-                TypeLifetime.Hierarchical);
-            container.RegisterType(
-                typeof(IRoomService), 
-                typeof(RoomService), 
-                null, 
-                TypeLifetime.Hierarchical);
-
-            var mapperConfig = new MapperConfiguration(config =>
-                config.AddProfile<MappingProfile>());
-            IMapper mapper = mapperConfig.CreateMapper();
-            
-            container.RegisterInstance(
-                typeof(IMapper), 
-                null, 
-                mapper, 
-                InstanceLifetime.Singleton);
-            container.AddNewExtension<DependencyInjectionExtension>();
-            container.AddExtension(new Diagnostic());
-        }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IReservationService, ReservationService>();
+            services.AddSingleton<IRoomService, RoomService>();
+            
+            var mapperConfig = new MapperConfiguration(config =>
+                config.AddProfile<MappingProfile>());
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
+            
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+            
             services.AddCors(options => options.AddPolicy(name: AppCorsPolicy,
                 builder =>
                 {
@@ -75,7 +60,7 @@ namespace alten_test.PresentationLayer
             
             services.AddControllers().AddControllersAsServices();
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContextFactory<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("PostgresqlServerConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>

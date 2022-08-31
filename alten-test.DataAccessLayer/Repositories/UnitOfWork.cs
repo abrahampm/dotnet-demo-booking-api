@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using alten_test.Core.Models;
 using alten_test.DataAccessLayer.Context;
 using alten_test.DataAccessLayer.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace alten_test.DataAccessLayer.Repositories
 {
@@ -11,9 +12,9 @@ namespace alten_test.DataAccessLayer.Repositories
         private IReservationRepository _reservations;
         private IRoomRepository _rooms;
 
-        public UnitOfWork(ApplicationDbContext applicationDbContext)
+        public UnitOfWork(IDbContextFactory<ApplicationDbContext> applicationDbContextFactory)
         {
-            _applicationDbContext = applicationDbContext;
+            _applicationDbContext = applicationDbContextFactory.CreateDbContext();
         }
 
         public IReservationRepository Reservations => _reservations ??= new ReservationRepository(_applicationDbContext);
