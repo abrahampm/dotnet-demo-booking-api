@@ -89,7 +89,7 @@ namespace alten_test.BusinessLayer.Services
             var reservation = await _reservationRepository.GetById(reservationDto.Id);
             var room = _roomRepository.Exists(reservationDto.Room.Id);
 
-            if (reservation != null || !room)
+            if (reservation != null && !room)
             {
                 if (reservation.ApplicationUserId == user.Id || roles.Contains(ApplicationUserRoles.Admin))
                 {
