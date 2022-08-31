@@ -6,7 +6,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Unity" Version="5.11.10" />
+    <Folder Include="Extensions" />
   </ItemGroup>
 
   <PropertyGroup>
