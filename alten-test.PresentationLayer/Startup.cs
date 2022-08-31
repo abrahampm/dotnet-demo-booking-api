@@ -8,7 +8,6 @@ using Microsoft.OpenApi.Models;
 
 using alten_test.BusinessLayer.Interfaces;
 using alten_test.BusinessLayer.Services;
-using alten_test.BusinessLayer.Utilities;
 using alten_test.Core.Mapping;
 using alten_test.Core.Models.Authentication;
 using alten_test.DataAccessLayer.Context;
@@ -19,7 +18,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Unity;
 
 
 namespace alten_test.PresentationLayer
