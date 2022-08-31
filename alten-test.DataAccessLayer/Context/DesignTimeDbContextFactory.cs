@@ -15,10 +15,10 @@ namespace alten_test.DataAccessLayer.Context
                 .SetBasePath(appSettingsPath)
                 .AddJsonFile("appsettings.json");
 
-            var connectionString = builder.Build().GetSection("ConnectionStrings").GetSection("MySqlServerConnection")
+            var connectionString = builder.Build().GetSection("ConnectionStrings").GetSection("PostgresqlServerConnection")
                 .Value;
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            optionsBuilder.UseMySQL(connectionString);
+            optionsBuilder.UseNpgsql(connectionString);
             return new ApplicationDbContext(optionsBuilder.Options);
         }
     }
