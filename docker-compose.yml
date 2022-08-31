@@ -1,0 +1,23 @@
+version: "0.1"
+
+services:
+  db:
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_USER: "alten_test"
+      POSTGRES_DB: "alten_test"
+      POSTGRES_PASSWORD: "wHiDaL5tKFhHxtWz"
+    ports:
+    - "5432:5432"
+  
+  dev:
+    build:
+      context: .
+      dockerfile: Dev.Dockerfile
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    volumes:
+      - ./:/app:rw
+    depends_on: 
+      - db
