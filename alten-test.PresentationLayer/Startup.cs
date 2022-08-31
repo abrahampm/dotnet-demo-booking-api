@@ -76,7 +76,7 @@ namespace alten_test.PresentationLayer
             services.AddControllers().AddControllersAsServices();
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseMySQL(Configuration.GetConnectionString("MySqlServerConnection")));
+                options.UseNpgsql(Configuration.GetConnectionString("PostgresqlServerConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
                 {
