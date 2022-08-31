@@ -13,7 +13,7 @@ namespace alten_test.DataAccessLayer.Context
                 "../alten-test.PresentationLayer/")); 
             var builder = new ConfigurationBuilder()
                 .SetBasePath(appSettingsPath)
-                .AddJsonFile("appsettings.json");
+                .AddJsonFile("appsettings.Development.json");
 
             var connectionString = builder.Build().GetSection("ConnectionStrings").GetSection("PostgresqlServerConnection")
                 .Value;
