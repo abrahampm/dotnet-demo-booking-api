@@ -111,7 +111,7 @@ namespace alten_test.PresentationLayer
 
             if (env.IsProduction())
             {
-                app.UseHttpsRedirection();    
+                // app.UseHttpsRedirection();    
             }
 
             app.UseRouting();
