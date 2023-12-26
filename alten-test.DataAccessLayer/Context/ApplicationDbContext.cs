@@ -1,3 +1,4 @@
+using System;
 using alten_test.Core.Models;
 using alten_test.Core.Models.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -11,7 +12,10 @@ namespace alten_test.DataAccessLayer.Context
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Room> Rooms { get; set; }
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {}
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
