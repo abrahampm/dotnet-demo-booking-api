@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\demo-booking-api.Core\demo-booking-api.Core.csproj" />
+    <ProjectReference Include="..\demo-booking-api.DataAccessLayer\demo-booking-api.DataAccessLayer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Extensions" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>alten_test.BusinessLayer</RootNamespace>
+  </PropertyGroup>
+
+</Project>
