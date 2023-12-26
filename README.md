@@ -71,5 +71,5 @@ CORS is configured in the Web API to allow cross-origin request from http://loca
 
 ###Project GitHub Repositories:
 - https://github.com/abrahampm/dotnet-demo-booking-api
-- https://github.com/abrahampm/dotnet-demo-booking-spa
+- https://github.com/abrahampm/angular-demo-booking-spa
 
