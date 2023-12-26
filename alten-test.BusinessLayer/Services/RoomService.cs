@@ -44,8 +44,12 @@ namespace alten_test.BusinessLayer.Services
 
         public async Task<ServiceResult> Update(RoomDto roomDto)
         {
-            var room = _mapper.Map<Room>(roomDto);
-            _repository.Update(room);
+            var roomEntity = await _repository.GetById(roomDto.Id);
+            roomEntity.Capacity = roomDto.Capacity;
+            roomEntity.Number = roomDto.Number;
+            roomEntity.Type = roomDto.Type;
+            roomEntity.Status = roomDto.Status;
+            _repository.Update(roomEntity);
             await _unitOfWork.Save();
             return new SuccessResult<RoomDto>(roomDto);
         }
