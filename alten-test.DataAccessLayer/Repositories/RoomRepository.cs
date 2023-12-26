@@ -20,7 +20,7 @@ namespace alten_test.DataAccessLayer.Repositories
 
         public async Task<List<Room>> GetAvailableWithStoredProcedure(DateTime startDate, DateTime endDate)
         {
-            return await _entities.FromSqlInterpolated($"CALL `GetAvailableRooms`({startDate},{endDate})").ToListAsync();
+            return await _entities.FromSqlInterpolated($"SELECT * FROM public.GetAvailableRooms(CAST({startDate} AS DATE),CAST({endDate} AS DATE))").ToListAsync();
         }
     }
 }
