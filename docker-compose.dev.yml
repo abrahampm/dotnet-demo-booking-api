@@ -24,7 +24,7 @@ services:
     volumes:
       - pgadmin_dev_data:/var/lib/pgadmin:rw
 
-  api:
+  dev:
     build:
       context: .
       dockerfile: Dev.Dockerfile
