@@ -44,7 +44,7 @@ namespace alten_test.DataAccessLayer.Repositories
 
         public new async Task<Reservation> GetById(int id)
         {
-            return await _entities.Include(r => r.Room).AsNoTracking()
+            return await _entities.Include(r => r.Room)
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
