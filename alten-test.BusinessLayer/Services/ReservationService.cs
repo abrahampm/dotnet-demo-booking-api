@@ -89,7 +89,7 @@ namespace alten_test.BusinessLayer.Services
             var reservation = await _reservationRepository.GetById(reservationDto.Id);
             var room = _roomRepository.Exists(reservationDto.Room.Id);
 
-            if (reservation != null && !room)
+            if (reservation != null && room)
             {
                 if (reservation.ApplicationUserId == user.Id || roles.Contains(ApplicationUserRoles.Admin))
                 {
@@ -97,7 +97,8 @@ namespace alten_test.BusinessLayer.Services
                     if (reservation.StartDate != reservationDto.StartDate ||
                         reservation.EndDate != reservationDto.EndDate)
                     {
-                        reservation = _mapper.Map<Reservation>(reservationDto);
+                        reservation.StartDate = reservationDto.StartDate;
+                        reservation.EndDate = reservationDto.EndDate;
                         
                         // Check if room is available during reservation dates 
                         var validateRoom = await _validateReservationRoom(reservation);
@@ -115,9 +116,7 @@ namespace alten_test.BusinessLayer.Services
                         }
                     }
                     
-                    
-                    reservation.Room = null;
-                    reservation.ApplicationUserId = user.Id;
+                    reservation.RoomId = reservationDto.Room.Id;
                     
                     _reservationRepository.Update(reservation);
                     await _unitOfWork.Save();
