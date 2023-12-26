@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\alten-test.Core\alten-test.Core.csproj" />
+    <ProjectReference Include="..\demo-booking-api.Core\demo-booking-api.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
 
-namespace alten_test.Core.Models.Authentication
+namespace alten_test.Core.Dto.Authentication
 {
     public class ApplicationUserDto
     {   

@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "alten-test.DataAccessLayer", "alten-test.DataAccessLayer\alten-test.DataAccessLayer.csproj", "{5944C958-D23A-4BFF-B1ED-A5BB5999046C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "demo-booking-api.DataAccessLayer", "demo-booking-api.DataAccessLayer\demo-booking-api.DataAccessLayer.csproj", "{5944C958-D23A-4BFF-B1ED-A5BB5999046C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "alten-test.BusinessLayer", "alten-test.BusinessLayer\alten-test.BusinessLayer.csproj", "{CEEEC6BF-34E9-4950-AF89-3E905F82F687}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "demo-booking-api.BusinessLayer", "demo-booking-api.BusinessLayer\demo-booking-api.BusinessLayer.csproj", "{CEEEC6BF-34E9-4950-AF89-3E905F82F687}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "alten-test.PresentationLayer", "alten-test.PresentationLayer\alten-test.PresentationLayer.csproj", "{5094680E-9D20-43FB-AF9B-86B50E3F0530}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "demo-booking-api.PresentationLayer", "demo-booking-api.PresentationLayer\demo-booking-api.PresentationLayer.csproj", "{5094680E-9D20-43FB-AF9B-86B50E3F0530}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "alten-test.Core", "alten-test.Core\alten-test.Core.csproj", "{2CE38E28-784E-437B-8643-52531112B0FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "demo-booking-api.Core", "demo-booking-api.Core\demo-booking-api.Core.csproj", "{2CE38E28-784E-437B-8643-52531112B0FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

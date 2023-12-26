@@ -10,7 +10,7 @@ namespace alten_test.DataAccessLayer.Context
         public ApplicationDbContext CreateDbContext(string[] args)
         {
             var appSettingsPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(),
-                "../alten-test.PresentationLayer/")); 
+                "../demo-booking-api.PresentationLayer/")); 
             var builder = new ConfigurationBuilder()
                 .SetBasePath(appSettingsPath)
                 .AddJsonFile("appsettings.Development.json");

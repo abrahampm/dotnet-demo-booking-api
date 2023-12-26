@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\alten-test.Core\alten-test.Core.csproj" />
-    <ProjectReference Include="..\alten-test.BusinessLayer\alten-test.BusinessLayer.csproj" />
+    <ProjectReference Include="..\demo-booking-api.Core\demo-booking-api.Core.csproj" />
+    <ProjectReference Include="..\demo-booking-api.BusinessLayer\demo-booking-api.BusinessLayer.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\alten-test.Core\alten-test.Core.csproj" />
-    <ProjectReference Include="..\alten-test.DataAccessLayer\alten-test.DataAccessLayer.csproj" />
+    <ProjectReference Include="..\demo-booking-api.Core\demo-booking-api.Core.csproj" />
+    <ProjectReference Include="..\demo-booking-api.DataAccessLayer\demo-booking-api.DataAccessLayer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

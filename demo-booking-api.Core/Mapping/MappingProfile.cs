@@ -1,5 +1,6 @@
 using AutoMapper;
 using alten_test.Core.Dto;
+using alten_test.Core.Dto.Authentication;
 using alten_test.Core.Models;
 using alten_test.Core.Models.Authentication;
 using alten_test.Core.Utilities;

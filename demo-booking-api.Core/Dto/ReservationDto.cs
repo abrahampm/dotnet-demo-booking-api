@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using alten_test.Core.Dto.Authentication;
 using alten_test.Core.Models.Authentication;
 
 namespace alten_test.Core.Dto
