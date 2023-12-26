@@ -48,7 +48,7 @@ namespace alten_test.DataAccessLayer.Repositories
 
         public async Task<T> GetById(int id)
         {
-            return await _entities.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
+            return await _entities.FirstOrDefaultAsync(e => e.Id == id);
         }
 
         public async Task Insert(T entity)
