@@ -56,7 +56,7 @@ It should listen at TCP ports 5000 for HTTP, and 5001 for HTTPS. Swagger is enab
 \
 2- To run the Angular SPA, first move to the SPA directory:\
 \
-`cd demo-booking-api-booking-spa`\
+`cd demo-booking-spa`\
 \
 Then install project dependencies:\
 \
