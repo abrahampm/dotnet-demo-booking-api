@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -49,7 +50,7 @@ namespace alten_test.PresentationLayer
             services.AddCors(options => options.AddPolicy(name: AppCorsPolicy,
                 builder =>
                 {
-                    builder.WithOrigins("http://booking-demo-abrahampm.vercel.app", "https://booking-demo-abrahampm.vercel.app");
+                    builder.WithOrigins(Configuration.GetSection("CORS:AllowedOrigins").Get<string[]>());
                     builder.AllowAnyHeader();
                     builder.AllowAnyMethod();
                     builder.AllowCredentials();
