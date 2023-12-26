@@ -1,11 +1,11 @@
-# ALTEN CANADA Test Project - Booking API
+# Demo Booking API
 **Author: Carlos Abraham Pérez Marrero**
 ### Application architecture overview:
 The solution is composed of 4 projects:
-- alten-test.DataAccessLayer (.NET Core Class Library Project)
-- alten-test.BusinessLayer (.NET Core Class Library Project)
-- alten-test.PresentationLayer (.NET Core WebApi Project)
-- alten-test.Core
+- demo-booking-api.DataAccessLayer (.NET Core Class Library Project)
+- demo-booking-api.BusinessLayer (.NET Core Class Library Project)
+- demo-booking-api.PresentationLayer (.NET Core WebApi Project)
+- demo-booking-api.Core
 
 Each project corresponds to one layer of a N-Tier architecture:
 - Data Access Layer: Uses the Unit Of Work design pattern. Implements repositories that abstract the logic required to access the underlying data stores. Configures the application database context. Exposes generic interfaces that services in the business layer consume.
@@ -20,9 +20,9 @@ Authorization was performed in the Business Logic Layer as most of the authoriza
 Dependency Injection was achieved in some cases with the help of a Unity container.
 \
 \
-The Relational Database Management System (RDBMS) used for this project was MySQL Server 8.0.28. Entity Framework Core Version 5.0.5 was used to handle application entities and migrations. Please find the application database SQL dump attached in the `alten-test-bookin-api` directory. The SQL clauses used to create an stored procedure to check hotel room availability is also present in that folder.
+The Relational Database Management System (RDBMS) used for this project was Postgresql 12. Entity Framework Core Version 6.0.8 was used to handle application entities and migrations. Please find the application database SQL dump attached in the `db` directory.
 
-An Angular Single Page Application (SPA) was implemented to consume the REST API. Authentication was implemented using the JWT schema. Some endpoint of the REST API are restricted only for authenticated users. Please note that there is a provisional endpoint to register admin users in the application. This can be used for testing. Check out the `/api/auth/register-admin` endpoint on Swagger.
+An Angular Single Page Application (SPA) was implemented to consume the REST API. Authentication was implemented using the JWT schema. Some endpoint of the REST API are restricted only for authenticated users.
 \
 \
 In the SPA, admin components are bundled in an Angular feature module which is protected by the route guards. UI was developed using the Angular Material Components and page layout was created using the [FlexLayout Library](https://github.com/angular/flex-layout/wiki). SASS was used as for stylesheet. 
@@ -37,14 +37,14 @@ The main functionalities of the system developed are:
 
 ### How to install and run the project
 The solution contains two applications:
-- alten-test-booking-api (Asp.Net Core Solution)
-- alten-test-booking-spa (Demo Angular Single Page Application to test the API functionality)
+- demo-booking-api (Asp.Net Core Solution)
+- demo-booking-spa (Demo Angular Single Page Application to test the API functionality)
 
 1- Change working directory to the Asp.Net Core Web API project in the Presentation Layer:\
 \
-`cd alten-test-booking-api/alten-test.PresentationLayer/`\
+`cd demo-booking-api/demo-booking-api.PresentationLayer/`\
 \
-Build the project (I used the Asp.Net Core Framework, Version 5.0.1, running on Linux (Ubuntu 20.04))\
+Build the project (I used the .Net Core Framework, Version 6, running on Linux (Ubuntu 20.04))\
 \
 `dotnet build`\
 \
@@ -56,7 +56,7 @@ It should listen at TCP ports 5000 for HTTP, and 5001 for HTTPS. Swagger is enab
 \
 2- To run the Angular SPA, first move to the SPA directory:\
 \
-`cd alten-test-booking-spa`\
+`cd demo-booking-api-booking-spa`\
 \
 Then install project dependencies:\
 \
@@ -70,6 +70,6 @@ CORS is configured in the Web API to allow cross-origin request from http://loca
 
 
 ###Project GitHub Repositories:
-- https://github.com/abrahampm/alten-test-booking-api
-- https://github.com/abrahampm/alten-test-booking-spa
+- https://github.com/abrahampm/dotnet-demo-booking-api
+- https://github.com/abrahampm/dotnet-demo-booking-spa
 
