@@ -9,7 +9,7 @@ COPY ./ ./
 RUN dotnet restore "./alten-test.PresentationLayer/alten-test.PresentationLayer.csproj" --disable-parallel
 COPY ./ ./
 
-RUN dotnet tool install --global dotnet-ef --version 6.0.0
+RUN dotnet tool install --global dotnet-ef --version 6.0.8
 
 WORKDIR /src/alten-test.DataAccessLayer
 RUN rm -r ./Migrations
@@ -24,5 +24,5 @@ RUN dotnet publish "./alten-test.PresentationLayer/alten-test.PresentationLayer.
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-
-CMD ASPNETCORE_URLS=http://*:$PORT dotnet alten-test.PresentationLayer.dll
+ENV ASPNETCORE_URLS=http://*:80
+ENTRYPOINT ["dotnet", "alten-test.PresentationLayer.dll"]
