@@ -6,7 +6,7 @@ name: Build and deploy ASP.Net Core app to Azure Web App - demo-booking-api
 on:
   push:
     branches:
-      - master
+      - production
   workflow_dispatch:
 
 jobs:
